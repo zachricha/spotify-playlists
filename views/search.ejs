@@ -1,0 +1,18 @@
+<h1>Search</h1>
+<form action="/search" method="POST">
+  <input type="text" name="search" placeholder="Search...">
+  <button type="submit">Search</button>
+</form>
+
+<% tracks.forEach((track) => { %>
+  <h5>
+    <%= track.name %>
+  </h5>
+  <p>Album:
+    <%= track.album.name %>
+  </p>
+  <p>Artist:
+    <%= track.artists[0].name %>
+  </p>
+  <a href="/playlist/select/<%= track.uri %>/name/<%= track.name %>"><button>Add to playlist</button></a>
+  <% }) %>

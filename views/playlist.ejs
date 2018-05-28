@@ -1,0 +1,18 @@
+<h1><%= playlist.name %></h1>
+
+<h3>Tracks:</h3>
+
+<% playlist.tracks.items.forEach((track) => { %>
+  <h5>
+    <%= track.track.name %>
+  </h5>
+  <p>Album:
+    <%= track.track.album.name %>
+  </p>
+  <p>Artist:
+    <%= track.track.artists[0].name %>
+  </p>
+  <form action="/playlist/<%= playlist.id %>/remove/<%= track.track.uri %>?_method=DELETE" method="POST">
+    <button type="submit">Remove</button>
+  </form>
+  <% }) %>

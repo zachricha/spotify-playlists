@@ -1,0 +1,10 @@
+<h2>Select playlist to add track <%= name %></h2>
+
+<% playlists.forEach((playlist) => { %>
+  <% if(playlist.owner.id === user.spotify_id) { %>
+    <form action="/playlist/<%= playlist.id %>/add/<%= track %>?_method=PATCH" method="POST">
+      <h4><%= playlist.name %></h4>
+      <button type="submit">Add to playlist</button>
+    </form>
+    <% } %>
+      <% }); %>
