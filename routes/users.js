@@ -5,7 +5,6 @@ const spotifyStrategy = require('passport-spotify').Strategy;
 const SpotifyWebApp = require('spotify-web-api-node');
 
 const Router = express.Router();
-let expiresIn = null;
 
 let spotifyApi = new SpotifyWebApp({
   clientId: process.env.SPOTIFY_APP_ID,
@@ -21,7 +20,7 @@ passport.use(new spotifyStrategy({
   function(accessToken, refreshToken, expires_in, profile, done) {
     spotifyApi.setAccessToken(accessToken);
     spotifyApi.setRefreshToken(refreshToken);
-    expiresIn = expires_in;
+
     User.findOrCreate({spotify_id: profile.id}, function(err, user) {
       if(err) {
         return done(err)
@@ -43,6 +42,7 @@ passport.deserializeUser(function(id, done) {
 
 function loginRequired(req, res, next) {
   const pastToken = spotifyApi.getAccessToken();
+
   if(!req.user || !pastToken) {
     return res.redirect('/login');
   };
@@ -58,7 +58,8 @@ function loginRequired(req, res, next) {
 };
 
 Router.route('/auth/spotify').get(passport.authenticate('spotify',
-{scope: ['user-read-email', 'user-read-private', 'playlist-modify-public', 'playlist-modify-private'], showDialog: true} ));
+{scope: ['user-read-email', 'user-read-private', 'playlist-modify-public',
+'playlist-modify-private'], showDialog: true} ));
 
 Router.route('/auth/spotify/callback').get(passport.authenticate('spotify', {
   successRedirect: '/', failureRedirect: '/login' }));
@@ -74,8 +75,9 @@ Router.route('/login').get((req, res, next) => {
 });
 // logout
 Router.route('/logout').post((req, res, next) => {
-  spotifyApi.resetCredentials();
+  spotifyApi.resetAccessToken();
   req.logout();
+
   res.redirect('/login');
 });
 // index shows user and playlists
